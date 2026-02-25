@@ -4,9 +4,8 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-from PIL import Image
+from PIL import Image, ImageFilter
 from tqdm import tqdm
-import cv2
 
 
 def is_corrupt(path: Path) -> bool:
@@ -38,8 +37,22 @@ def is_blurry(img: np.ndarray, threshold: float = 100.0) -> bool:
     Returns:
         bool: True if blurry, False otherwise.
     """
-    laplacian_var = cv2.Laplacian(img, cv2.CV_64F).var()
-    return laplacian_var < threshold
+    # Apply a Laplacian-like filter using PIL's built-in kernel
+    laplacian_kernel = ImageFilter.Kernel(
+        size=(3, 3),
+        kernel=[0, 1, 0,
+                1,-4, 1,
+                0, 1, 0],
+        scale=1,
+        offset=0
+    )
+    laplacian_img = img.filter(laplacian_kernel)
+
+    # Convert to numpy array
+    laplacian_array = np.array(laplacian_img)
+
+    # If variance is low, the image is likely blurry
+    return laplacian_array.var() < threshold
 
 
 def is_overexposed(img: np.ndarray, low: int = 30, high: int = 220) -> bool:
@@ -84,6 +97,7 @@ def build_image_dict(img_dir: Path) -> dict[str, np.ndarray]:
     Returns:
         dict: Dictionary mapping valid image filenames to NumPy arrays.
     """
+    print("Processing images...")
     img_dict = {}
     seen_hashes = set()
 
@@ -111,6 +125,8 @@ def build_image_dict(img_dir: Path) -> dict[str, np.ndarray]:
         # Keep the valid image
         img_dict[file] = img
 
+    print("Images processed successfully.")
+
     return img_dict
 
 
@@ -122,11 +138,15 @@ def save_cleaned_images(output_dir: Path, img_dict: dict[str, np.ndarray]):
         output_dir (Path): Directory to save images.
         img_dict (dict): Dictionary of image filenames and arrays.
     """
+    print("Saving images...")
     output_dir.mkdir(parents=True, exist_ok=True)
-
-    for filename, img_array in img_dict.items():
+    num_img = 0
+    for filename, img_array in tqdm(img_dict.items(), desc="Saving images"):
         img = Image.fromarray(img_array.astype(np.uint8))
         img.save(output_dir / filename)
+        num_img +=1
+
+    print(f"{num_img} images saved to {output_dir}.")
 
 
 def create_annotation_csv(label_dir: Path, output_dir: Path, img_dict: dict[str, np.ndarray]):

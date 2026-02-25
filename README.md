@@ -43,7 +43,6 @@ pip install -r requirements.txt
 - `numpy`
 - `pandas`
 - `Pillow`
-- `opencv-python`
 - `tqdm`
 - `kagglehub`
 
