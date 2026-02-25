@@ -1,14 +1,14 @@
 # Project Setup and Usage
 
-This project processes the AffectNet dataset for machine learning purposes. It includes scripts for downloading and cleaning images, generating labels, and preparing data for training models.
+ADD DESCRIPTION OF PROJECT
 
 ---
 
 ## 1. Clone the Repository
 
 ```bash
-git clone <your-repo-url>
-cd <your-repo-folder>
+git clone https://github.com/agrace339/Facial-Recognition-using-AffectNet.git
+cd Facial-Recognition-using-AffectNet
 ```
 
 ---
@@ -58,7 +58,7 @@ All scripts are located in the `scripts/` folder. You need to run them in the fo
 ### **Step 1: Download and organize raw dataset**
 
 ```bash
-python scripts/download_dataset.py
+python scripts/1_data_import.py
 ```
 
 - Downloads the AffectNet dataset from Kaggle using `kagglehub`.
@@ -68,23 +68,13 @@ python scripts/download_dataset.py
 ### **Step 2: Clean and process images**
 
 ```bash
-python scripts/clean_dataset.py
+python scripts/2_data_cleaning.py
 ```
 
 - Removes corrupt, blurry, overexposed, or duplicate images.
 - Converts images to grayscale and resizes them to 96x96 pixels.
 - Saves cleaned images to `data/cleaned/images`.
 - Generates a CSV annotation file `data/cleaned/affectnet_annotations.csv`.
-
----
-
-## 5. Notes
-
-- Make sure the virtual environment is active whenever you run the scripts.
-- Do **not** commit large image files or the `venv` folder to GitHub.
-- Use the `.gitignore` provided to keep the repository clean.
-
----
 
 ## 6. Directory Structure
 
@@ -102,12 +92,10 @@ project-root/
 │     └─ affectnet_annotations.csv
 │
 ├─ scripts/
-│  ├─ download_dataset.py
-│  └─ clean_dataset.py
+│  ├─ 1_data_import.py
+│  └─ 2_data_cleaning.py
 │
 ├─ requirements.txt
 └─ README.md
 ```
-
-This setup ensures your dataset is clean and ready for model training.
 
