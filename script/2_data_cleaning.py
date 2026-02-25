@@ -37,6 +37,7 @@ def is_blurry(img: np.ndarray, threshold: float = 100.0) -> bool:
     Returns:
         bool: True if blurry, False otherwise.
     """
+    img_pil = Image.fromarray(img)
     # Apply a Laplacian-like filter using PIL's built-in kernel
     laplacian_kernel = ImageFilter.Kernel(
         size=(3, 3),
@@ -46,7 +47,7 @@ def is_blurry(img: np.ndarray, threshold: float = 100.0) -> bool:
         scale=1,
         offset=0
     )
-    laplacian_img = img.filter(laplacian_kernel)
+    laplacian_img = img_pil.filter(laplacian_kernel)
 
     # Convert to numpy array
     laplacian_array = np.array(laplacian_img)
@@ -97,15 +98,16 @@ def build_image_dict(img_dir: Path) -> dict[str, np.ndarray]:
     Returns:
         dict: Dictionary mapping valid image filenames to NumPy arrays.
     """
-    print("Processing images...")
     img_dict = {}
     seen_hashes = set()
+    skipped_files = 0
 
     for file in tqdm(os.listdir(img_dir), desc="Processing images"):
         file_path = img_dir / file
 
         # Skip corrupt images
         if is_corrupt(file_path):
+            skipped_files += 1
             continue
 
         # Resize and convert image to grayscale
@@ -115,17 +117,19 @@ def build_image_dict(img_dir: Path) -> dict[str, np.ndarray]:
         img_hash = hashlib.md5(img.tobytes()).hexdigest()
 
         if img_hash in seen_hashes:
+            skipped_files += 1
             continue  # Skip exact duplicates
         seen_hashes.add(img_hash)
 
         # Skip blurry or overexposed images
         if is_blurry(img) or is_overexposed(img):
+            skipped_files += 1
             continue
 
         # Keep the valid image
         img_dict[file] = img
 
-    print("Images processed successfully.")
+    print(f"Images processed successfully. {skipped_files} images were flagged as corrupt, duplicates, overexposed or blurry and skipped.")
 
     return img_dict
 
@@ -138,7 +142,6 @@ def save_cleaned_images(output_dir: Path, img_dict: dict[str, np.ndarray]):
         output_dir (Path): Directory to save images.
         img_dict (dict): Dictionary of image filenames and arrays.
     """
-    print("Saving images...")
     output_dir.mkdir(parents=True, exist_ok=True)
     num_img = 0
     for filename, img_array in tqdm(img_dict.items(), desc="Saving images"):
@@ -161,7 +164,7 @@ def create_annotation_csv(label_dir: Path, output_dir: Path, img_dict: dict[str,
     print("Creating annotation CSV...")
     data = []
 
-    for img_name in tqdm(img_dict.keys(), desc="Processing labels"):
+    for img_name in tqdm(img_dict.keys(), desc="Saving annotation csv:"):
         label_file = label_dir / (os.path.splitext(img_name)[0] + ".txt")
 
         if not label_file.exists():
