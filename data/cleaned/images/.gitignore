@@ -1,0 +1,4 @@
+# Ignore images and labels in all subfolders
+*.png
+*.jpg
+*.jpeg

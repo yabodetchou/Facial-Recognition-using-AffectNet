@@ -1,0 +1,6 @@
+# Ignore virtual environment folder
+venv/
+
+# Ignore OS-specific files
+.DS_Store
+**/.DS_Store
