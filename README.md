@@ -88,6 +88,9 @@ project-root/
 │  │  └─ labels/
 │  └─ cleaned/
 │     ├─ images/
+│     │  ├─ train/
+│     │  ├─ val/
+│     │  └─ test/
 │     └─ affectnet_annotations.csv
 │
 ├─ scripts/
