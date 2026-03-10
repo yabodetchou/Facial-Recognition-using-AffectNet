@@ -75,6 +75,16 @@ python scripts/2_data_cleaning.py
 - Saves cleaned images to `data/cleaned/images`.
 - Generates a CSV annotation file `data/cleaned/affectnet_annotations.csv`.
 
+### **Step 3: Principal Component Analysis**
+
+```bash
+python scripts/3_PCA.py
+```
+
+- Defines PCA Class which applies PCA to a Training set to get a set of principal components which can be applied to images to project them onto a smaller feature space.
+- Generates a scatter plot of the two most important components
+- Generates an animation of a reconstuction of one of the training images
+
 ## 6. Directory Structure
 
 After setup and running scripts, your folder structure should look like this:
