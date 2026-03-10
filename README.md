@@ -95,7 +95,8 @@ project-root/
 │
 ├─ scripts/
 │  ├─ 1_data_import.py
-│  └─ 2_data_cleaning.py
+│  ├─ 2_data_cleaning.py
+│  └─ 3_PCA.py
 │
 ├─ requirements.txt
 └─ README.md
