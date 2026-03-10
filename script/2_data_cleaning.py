@@ -134,13 +134,6 @@ def build_image_dict(img_dir: Path) -> dict[str, np.ndarray]:
 
     return img_dict
 
-
-from pathlib import Path
-from PIL import Image
-from tqdm import tqdm
-import numpy as np
-import random
-
 def save_cleaned_images(output_dir: Path, img_dict: dict[str, np.ndarray], 
                         split_ratios=(0.7, 0.15, 0.15), seed=345):
     """
