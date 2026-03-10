@@ -1,6 +1,13 @@
 # Ignore virtual environment folder
 venv/
+.vscode/
 
 # Ignore OS-specific files
 .DS_Store
 **/.DS_Store
+
+# Cache directories
+script/cache/
+
+# Output figures
+output_figs/
